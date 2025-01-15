@@ -17,6 +17,7 @@ export default function Messsages({user,db}) {
   async function kuldes() {
     try {
       await addDoc(collection(db, "messages"), {ki:user.email,kinek:kinek,mikor:Timestamp.now().toDate(),uzenet:uzenet});
+      setKinek(""); setUzenet("");
       setError(false);
     } catch (error) {
       console.log(error.code);
@@ -24,6 +25,11 @@ export default function Messsages({user,db}) {
     }
    
   }
+
+  function enter(e){
+    if(e.key === "Enter") kuldes();
+  }
+
 
   useEffect(() => {
    if(user){
@@ -36,7 +42,7 @@ export default function Messsages({user,db}) {
   },[user]);
   
   return (
-    <div className='messages'>
+    <div className='messages' onKeyDown={e => enter(e)}>
       {user ? <> <div className='kuldes'>
         <TextField required error={Error} label="Email"  size="small" variant="outlined" value={kinek} onChange={e => setKinek(e.target.value)} />
         <TextField required error={Error} label="Üzenet" size="small" variant="outlined" value={uzenet} onChange={e => setUzenet(e.target.value)} />

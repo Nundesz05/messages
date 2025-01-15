@@ -16,6 +16,7 @@ import { firebaseConfig } from "../firebaseConfig.js"
 import { useState } from 'react'
 import Layout from './Layout.jsx'
 import { useEffect } from 'react'
+import Admin from './pages/Admin.jsx'
 
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
@@ -24,9 +25,13 @@ export const auth = getAuth(app);
 export default function App() {
 
  const [ user, setUser ] = useState(null);
-
+ const [ admin, setAdmin ] = useState(false);
  useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (currentUser) => setUser(currentUser));
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) =>{
+     setUser(currentUser);
+    if(currentUser && currentUser.email == "bela@gmail.com") setAdmin(true); 
+    else setAdmin(false);});
+  
   return () => unsubscribe
 }, []);
 
@@ -35,10 +40,11 @@ async function logout() {
 }
 
  const router = createBrowserRouter([
-  { path: "/", element: <Layout user={user} logout={logout}/>, children: [
+  { path: "/", element: <Layout user={user} logout={logout} admin={admin}/>, children: [
     { path: "/", element: <Messages user={user} db={db}/>},
     { path: "/users", element: <Users user={user} db={db}/> },
     { path: "/about", element: <About /> },
+    { path: "/admin", element: <Admin admin={admin} db={db}/> },
     { path: "/login", element: <Login auth={auth} setUser={setUser} /> },
     { path: "*", element: <Notfound /> }
   ]}
