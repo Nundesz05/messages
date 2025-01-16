@@ -16,9 +16,15 @@ export default function Messsages({user,db}) {
   
   async function kuldes() {
     try {
-      await addDoc(collection(db, "messages"), {ki:user.email,kinek:kinek,mikor:Timestamp.now().toDate(),uzenet:uzenet});
-      setKinek(""); setUzenet("");
-      setError(false);
+      if(kinek=="" && uzenet=="") {
+        setError(true);
+      
+      } else {
+        await addDoc(collection(db, "messages"), {ki:user.email,kinek:kinek,mikor:Timestamp.now().toDate(),uzenet:uzenet});
+        setKinek(""); setUzenet("");
+        setError(false);
+      }
+      
     } catch (error) {
       console.log(error.code);
       setError(true);
